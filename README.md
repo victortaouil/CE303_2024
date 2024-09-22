@@ -29,6 +29,6 @@
   - 30% Seminário em grupo. 
   > Datas dos trabalhos ainda não divulgadas.
   
-[imagem meramente ilustrativa](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHFsTv5bli1IJ2MmhQySqorMlmVotTJ0ceCA&s) 
+![imagem meramente ilustrativa](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHFsTv5bli1IJ2MmhQySqorMlmVotTJ0ceCA&s) 
 
   
