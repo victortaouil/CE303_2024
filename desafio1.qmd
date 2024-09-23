@@ -2,8 +2,8 @@
 
     ---
     title: "Desafio1 - Grupo: Victor Taouil"
-    format: html
     editor: visual
+    format: gfm
     ---
 
     </div>
