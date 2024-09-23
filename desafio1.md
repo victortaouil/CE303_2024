@@ -1,13 +1,4 @@
-
--   <div>
-
-    ---
-    title: "Desafio1 - Grupo: Victor Taouil"
-    editor: visual
-    format: gfm
-    ---
-
-    </div>
+<!-- -*- mode: gfm -*- -->
 
 # Primeiro gráfico não efetivo:
 ![gráfico](https://fivethirtyeight.com/wp-content/uploads/2021/09/mithani-sweedler.RECALL-EASY-0910-1.png)
