@@ -15,4 +15,4 @@
 
 # Como é possível melhora-lo?
 ## Pensamos na seguinte alternativa:
-![imagem](Downloads/teste.png)
+![imagem](C:\Users\victor.taouil\Downloads\teste.png)
