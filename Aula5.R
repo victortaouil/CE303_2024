@@ -37,3 +37,29 @@ text(x,y,c(rep("inserindo texto",5)), col= 'black')
 legend(30,2, c('cat1','cat2'),pch = 19, cex =1.5, col= c(2,3))
 title("Bubble Chart, here we go!")
 
+# GRáfico de barras empilhadas
+
+ano <- c(rep(2022,12), rep(2023,12))
+mes <- seq(1,12)
+ven <- rpois(24,10)
+
+barra <- rbind(ven[1:12],ven[13:24])
+barra
+barplot(barra)
+
+#Colocando as barras separadas
+barplot(barra, beside =T)
+
+# Gráfico empilhado 100%
+
+v <- rbind(ven[1:12],ven[13:24])
+
+#Aplicar, por coluna a função soma.
+
+soma <- apply(v,2,sum)
+soma
+# pegamos cada um dos elementos e dividimos pela soma da coluna, dessa forma temos a porcentagem
+
+p <- v%*%diag(1/soma)
+p
+barplot(p, beside = F)
