@@ -48,7 +48,14 @@ barra
 barplot(barra)
 
 #Colocando as barras separadas
-barplot(barra, beside =T)
+# Seus dados
+
+# Criando o gráfico
+barplot(barra, beside = TRUE, names.arg = seq(1, 12), ylim = c(0, max(barra) + 10)) + axis(2, at = seq(0, max(barra), by = 10))
+
+# Adicionando e numerando o eixo y
+
+
 
 # Gráfico empilhado 100%
 
@@ -62,4 +69,4 @@ soma
 
 p <- v%*%diag(1/soma)
 p
-barplot(p, beside = F)
+barplot(p, beside = F, col = c(3,4))
