@@ -1,0 +1,224 @@
+---
+title: "Desafio 01"
+output: pdf
+editor: visual
+---
+
+Grupo: Ana Beatriz da Silva Marques, Antonio Paulo Steffen Neto, Beatriz Amalia de Oliveira, Giulia Vitória Evangelista do Amaral, Jhullya da Rosa Shalders e Victor Mancia Taouil
+
+# Primeiro gráfico ineficaz:
+
+![](https://fivethirtyeight.com/wp-content/uploads/2021/09/mithani-sweedler.RECALL-EASY-0910-1.png)
+
+## Por que ele é ineficaz?
+
+### Alguns pontos aqui são fundamentais:
+
+-   Não há necessidade de circular "todos os estados", quando fala-se em estados americanos, pressupõe-se que sejam todos;
+-   As cores e o formato do gráfico não estão em harmonia, pois cores como amarelo e laranja indicam estado de alerta (FEISNER, 2000), ao contrário do azul. Contudo, no gráfico, a ideia é destacar o grupo que está em azul;
+-   O gráfico de círculos traz a ideia de camadas, ou "níveis", mas as cores aplicadas não refletem isso;
+-   A interpretação do gráfico é difícil, por exemplo: o estado da Califórnia está dentro dos estados americanos, também está dentro dos estados que podem fazer um recall e daqueles que não exigem causa anterior para faze-lo, por último, é o único que tem um prazo maior que 5 meses para circular a petição.
+
+# Como é possível melhorá-lo?
+
+## Pensamos na seguinte alternativa:
+
+```{r, warning = FALSE, message= FALSE}
+#| code-fold: false
+#| code-summary: "Show the code"
+#| echo: false
+#| 
+library("ggplot2")
+library("dplyr")
+library("maps")
+library("mapproj")
+
+# Criar dataframe com estados e status de recall
+states <- data.frame(
+  state = c("California", "Nevada", "Idaho", "Illinois", "Michigan", "Oregon", 
+            "Wisconsin", "Arizona", "New Jersey", "Colorado", "Louisiana", 
+            "North Dakota", "Alaska", "Rhode Island", "Washington", "Montana", 
+            "Georgia", "Kansas", "Minnesota", "South Dakota", "Alabama", "Wyoming", 
+            "Utah", "Texas", "Mississippi", "New Mexico", "Oklahoma", "Maine", 
+            "New Hampshire", "Vermont", "Massachusetts", "Connecticut", 
+            "New York", "Pennsylvania", "Delaware", "Maryland", "Virginia", 
+            "North Carolina", "South Carolina", "Florida", "Tennessee", 
+            "Kentucky", "Indiana", "Missouri", "Arkansas", "Iowa", "West Virginia",
+            "Hawaii", "Kentucky", "Nebraska", "Ohio", "Virginia"),
+  
+  status = c("No cause required for recall
+and >5 months ciculation period", 
+             "No cause required for recall", "No cause required for recall", 
+             "No cause required for recall", "No cause required for recall", 
+             "No cause required for recall", "No cause required for recall", 
+             "No cause required for recall", "No cause required for recall", 
+             "No cause required for recall", "No cause required for recall", 
+             "No cause required for recall", 
+             "Can recall a governor", "Can recall a governor", "Can recall a governor", 
+             "Can recall a governor", "Can recall a governor", "Can recall a governor", 
+             "Can recall a governor", "No recall", "No recall", "No recall", 
+             "No recall", "No recall", "No recall", "No recall", "No recall", 
+             "No recall", "No recall", "No recall", "No recall", "No recall", 
+             "No recall", "No recall", "No recall", "No recall", "No recall", 
+             "No recall", "No recall", "No recall", "No recall", 
+             "No recall", "No recall", "No recall", "No recall", "No recall", 
+             "No recall", "No recall", "No recall", "No recall", "No recall","No recall")
+)
+
+#Agora temos que combinar o vetor states com o df map
+states <- states |> mutate(state = tolower(state), status = ifelse(status == "All states", "No recall",status))
+
+map <- map_data("state")
+map <- inner_join(map,states,by = c("region" = "state"))
+
+
+
+map1 <- ggplot(map, aes(x = long, y = lat)) + 
+  geom_polygon(aes(fill = status,  group = region), color = 'black') + coord_map() +
+  labs(title = 'The recall process in California is easier than most',
+       x = NULL,
+       y = NULL,
+       fill = 'Recall Status') +
+  scale_fill_manual( values = c("No cause required for recall
+and >5 months ciculation period" = 'orangered',
+                                'No cause required for recall' = 'orange',
+                                'Can recall a governor' = 'salmon',
+                                'No recall' = 'grey95'))+
+  theme_void()+
+  theme( legend.position = 'right',
+         legend.location = 'plot',
+         legend.text = element_text(size=7.5),
+         legend.key.size = unit(0.5, 'cm'),
+         legend.key.height = unit(0.30, 'cm'), 
+         legend.key.width = unit(0.30, 'cm'), 
+         legend.spacing.y = unit(0.5,'cm')
+         )
+
+
+map1
+
+```
+
+## Pontos que foram pensados para a confecção do gráfico:
+
+-   Através deste gráfico destaca-se que a Califórnia é o único estado com as propriedades relatadas. Além disso, torna-se mais intuitivo de entender que ela se destaca por ser o único estado em sua categoria, por conta do mapa e também das cores.
+
+-   O gráfico também é capaz de trazer as mesmas informações que o anterior: de que há muito mais estados sem política de recall do que com e onde cada categoria está.
+
+# Segundo gráfico ineficaz
+
+![](https://cdn.mos.cms.futurecdn.net/h5MSdPM97fm55kTk4kk4P7-604-80.jpg.webp)
+
+## Por que ele é ineficaz?
+
+### Pontos fundamentais:
+
+-   O eixo Y está invertido para diminuir o impacto dos dados;
+    -   Assim, o que parece representar uma baixa no número de mortes, na verdade é uma alta.
+
+# Como é possível melhorá-lo?
+
+## Pensamos na seguinte alternativa:
+
+```{r}
+#| echo: false
+#| warning: false
+
+
+library(ggplot2)
+
+years <- c(1990, 1995, 1998, 2001, 2005, 2006, 2010, 2014)
+deaths <- c(873, 750, 450, 600, 560, 800, 670, 721)
+
+data <- data.frame(years, deaths)
+
+ggplot(data, aes(x = years, y = deaths)) +
+  geom_line(aes(color = deaths), size = 1.5) +  
+  geom_ribbon(aes(ymin = 0, ymax = deaths), fill = "red", alpha = 0.7) + 
+  scale_color_gradient(low = "grey10", high = "grey10") + 
+  ylim(0, 900) +   
+  labs(title = "Gun Deaths in Florida",
+       x = "",
+       y = "Number of Murders Committed Using Firearms") +
+  theme_minimal()
+
+```
+
+## Pontos que foram pensados para a confecção do gráfico:
+
+-   Foi invertido o eixo Y do gráfico anterior, assim pode-se mostrar como há uma alta nas mortes a partir da metade dos anos 2000.
+
+# Terceiro gráfico ineficaz
+
+![](https://venngage-wordpress.s3.amazonaws.com/uploads/2021/01/piechart1.jpg)
+
+## Por que ele é ineficaz?
+
+### Alguns pontos aqui são fundamentais:
+
+-   É usado o gráfico de rosca, mesmo tendo mais de três variáveis
+
+-   Não é informado a porcentagem, nem o número absoluto, da ocorrência do corona vírus nas regiões presentes no gráfico
+
+-   Cores muito parecidas são usadas para diferentes regiões
+
+-   Não há como saber de quando são esses dados
+
+# Como é possível melhorá-lo?
+
+## Pensamos na seguinte alternativa:
+
+```{r}
+#| echo: false
+#| warning: false
+
+
+library(ggplot2)
+
+dados <- data.frame(
+  UK_Regions = c("Northen \nIreland", 
+                 "Scotland", 
+                 "Wales", 
+                 "London",
+                 "Midlands",
+                 "South East",
+                 "North West",
+                 "North West \nand Yorkshire",
+                 "East of \nEngland",
+                 "South West"),
+  Cases_of_Coronavirus = c(179,538,516,2064,1616,942,763,696,494,269)
+)
+
+par(mar = c(5, 4, 4, 2) )
+barplot(dados$Cases_of_Coronavirus, 
+        names.arg = dados$UK_Regions, 
+        col = "tomato", 
+        main = "Confirmed Coronavirus Cases in the UK", 
+        xlab = "Regions", 
+        ylab = "Number of Cases",
+          las = 1,
+        cex.names = 0.5,
+        border = FALSE)  
+mtext("Total cases until 10/06/2020: 8077", side = 3, line = 0.5)
+ 
+```
+
+## Pontos que foram pensados para a confecção do gráfico:
+
+-   Usamos gráfico de barras para uma melhor visualização dos dados
+
+-   Fizemos uma estimativa dos números de acordo com os ângulos do gráfico de rolha
+
+-   Adicionamos uma possível data relativa aos dados
+
+-   Usamos apenas uma cor no gráfico, para não poluí-lo
+
+## Referências
+
+FEISNER, E. A. Colour: how to use colour in art and design. 2. ed. London: Thames & Hudson, 2000.
+
+VENNGAGE. **Confirmed coronavirus cases in the UK**. Infográficos ruins: 9 erros a evitar. Disponível em: <https://pt.venngage.com/blog/infograficos-ruins/>. Acesso em: 25 set. 2024.
+
+FiveThirtyEight. **The recall process in California is easier than most**. In: How California Became the Recall Capital of the U.S. FiveThirtyEight, 2021. Disponível em: <https://fivethirtyeight.com/features/how-california-became-the-recall-capital-of-the-u-s/>. Acesso em: 25 set. 2024.
+
+BUSINESS INSIDER. **Gun Deaths in Florida**. In: Gun deaths in Florida increased with 'Stand Your Ground.' Business Insider, 2014. Disponível em: <https://www.businessinsider.com/gun-deaths-in-florida-increased-with-stand-your-ground-2014-2>. Acesso em: 25 set. 2024.
