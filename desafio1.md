@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 <!-- -*- mode: gfm -*- -->
 
 # Primeiro gráfico não efetivo:
@@ -76,7 +81,6 @@ coordenadas <- data.frame(
                 -93.0977, -80.4549, -155.5828, -84.2700, -99.9018, -82.9071, -78.6569)
 )
 
-print(coordenadas)
 
 
 
@@ -111,7 +115,6 @@ and >5 months ciculation period" = 'orangered',
 
 
 map1
-
 
 
 ```
