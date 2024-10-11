@@ -7,6 +7,7 @@ library(deldir)
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
+library(dplyr)
 
 
 # Lê o arquivo CSV (substitua o caminho correto)
@@ -17,6 +18,10 @@ df <- read.csv("https://raw.githubusercontent.com/victortaouil/CE303_2024/refs/h
 df$Latitude <- as.numeric(gsub(",", ".", df$Latitude))
 df$Longitude <- as.numeric(gsub(",", ".", df$Longitude))
 
+class(df$Latitude)
+df<-df %>% mutate(Latitude = Latitude-0.3, Longitude = Longitude -0.35)
+df
+head(df)
 sum(is.na(df$Latitude))  
 sum(is.na(df$Longitude))
 df[is.na(df$Latitude), ] 
@@ -45,4 +50,4 @@ plot(voronoi, wlines = "tess", main = "Diagrama de Voronoi - Paraná", add = TRU
 points(df$Longitude, df$Latitude, col = "violet", pch = 19, cex = 1.5)
 text(df$Longitude, df$Latitude, labels = df$N.de.referência, pos = 3, cex = 0.8)
 
-legend("bottomright", legend=c(df$Cidade), cex=0.8)
+legend("bottomright", legend=paste(df$Cidade, df$N.de.referência, sep=" - "), cex=0.35)
