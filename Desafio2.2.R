@@ -19,7 +19,7 @@ df$Latitude <- as.numeric(gsub(",", ".", df$Latitude))
 df$Longitude <- as.numeric(gsub(",", ".", df$Longitude))
 
 class(df$Latitude)
-df<-df %>% mutate(Latitude = Latitude-0.3, Longitude = Longitude -0.35)
+df<-df %>% mutate(Latitude = Latitude-0.2, Longitude = Longitude -0.35)
 df
 head(df)
 sum(is.na(df$Latitude))  
