@@ -10,7 +10,8 @@ library(rnaturalearthdata)
 
 
 # Lê o arquivo CSV (substitua o caminho correto)
-df <- read.csv("C:/Users/anton/Downloads/Cidades do Paraná com Estações Metereológicas - Estações (1).csv", header = TRUE, sep = ",")
+df <- read.csv("https://raw.githubusercontent.com/victortaouil/CE303_2024/refs/heads/main/Cidades%20do%20Paran%C3%A1%20com%20Esta%C3%A7%C3%B5es%20Metereol%C3%B3gicas%20-%20Esta%C3%A7%C3%B5es.csv", header = TRUE, sep = ",")
+
 
 # substitui vírgulas por pontos nas coordenadas
 df$Latitude <- as.numeric(gsub(",", ".", df$Latitude))
@@ -35,9 +36,13 @@ voronoi <- deldir(df$Longitude, df$Latitude)
 # Obtém a silhueta sexy do Paraná
 brazil_map <- ne_states(country = "Brazil", returnclass = "sf")
 parana_map <- brazil_map[brazil_map$name == "Paraná", ]
+df$ID <- 1:nrow(df)
 
 # Plota o mapa e o diagrama de Voronoi
+par(mar = c(3.5, 3.5, 3.5, 3.5))
 plot(st_geometry(parana_map), col = "lightgray", main = "Diagrama de Voronoi - Paraná")
-plot(voronoi, add = TRUE)
-points(df$Longitude, df$Latitude, col = "blue", pch = 19, cex = 1.5)
-text(df$Longitude, df$Latitude, labels = df$Cidade, pos = 3, cex = 0.8)
+plot(voronoi, wlines = "tess", main = "Diagrama de Voronoi - Paraná", add = TRUE)
+points(df$Longitude, df$Latitude, col = "violet", pch = 19, cex = 1.5)
+text(df$Longitude, df$Latitude, labels = df$N.de.referência, pos = 3, cex = 0.8)
+
+legend("bottomright", legend=c(df$Cidade), cex=0.8)
