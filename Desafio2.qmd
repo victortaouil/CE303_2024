@@ -1,0 +1,78 @@
+---
+title: "Diagrama de Voronoj."
+subtitle: "Estações metereológicas"
+format: pdf
+editor: visual
+---
+
+# Desafio 2. 
+
+## Equipe: 
+
+-   Antonio Steffen Neto
+
+-   Jhullya Shalders
+
+-   Victor Mancia Taouil
+
+### Gráfico escolhido: diagrama de voronoy
+
+----------------------------------------------------------------
+
+#### O diagrama de Voronoy:
+
+1.  O diagrama é uma representação espacial de áreas de influência de determinada fonte.
+    -   Considere também que existem várias fontes em um determinado plano (No nosso caso é um mapa do Paraná). Conseguimos determinar os específicos planos para cada fonte de acordo com a menor proximidade de pontos até a fonte geradora, o resultado são vários polígonos cuja distância é a menor possível entre a geração e a borda do polígono.
+2.  No nosso caso em específico, há um objetivo bem claro na utilização do diagrama de Voronoj: determinar a área de influência, ou seja, a área coberta por determinada fonte em que os dados coletados pela estação metereológica é a mais representativo possível.
+
+```{R, warning = FALSE, echo = FALSE,message = FALSE}
+#Carrega bibliotecas necessárias
+
+library(deldir)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(dplyr)
+
+# Lendo os dados que estão no repositório
+df <- read.csv("https://raw.githubusercontent.com/victortaouil/CE303_2024/refs/heads/main/Cidades%20do%20Paran%C3%A1%20com%20Esta%C3%A7%C3%B5es%20Metereol%C3%B3gicas%20-%20Esta%C3%A7%C3%B5es.csv", header = TRUE, sep = ",")
+
+
+# Substituindo "," por "." na latitude e longitude
+df$Latitude <- as.numeric(gsub(",", ".", df$Latitude))
+df$Longitude <- as.numeric(gsub(",", ".", df$Longitude))
+
+
+# Os pontos não vieram em sua posição correta, portanto tivemos que fazer uma adaptação
+df<-df %>% mutate(Latitude = Latitude-0.2, Longitude = Longitude -0.35)
+
+
+
+#tirar as latitude e longitudes nulas
+
+df <- df[!is.na(df$Latitude) & !is.na(df$Longitude), ]
+
+
+
+
+
+# Gera o diagrama de Voronoi
+voronoi <- deldir(df$Longitude, df$Latitude)
+
+
+brazil_map <- ne_states(country = "Brazil", returnclass = "sf")
+parana_map <- brazil_map[brazil_map$name == "Paraná", ]
+df$ID <- 1:nrow(df)
+
+# Plota o mapa e o diagrama de Voronoi
+par(mar = c(1, 1, 1, 1))
+plot(st_geometry(parana_map), col = "lightgray", main = "Diagrama de Voronoi - Paraná")
+plot(voronoi, wlines = "tess", main = "Diagrama de Voronoi - Paraná", add = TRUE)
+points(df$Longitude, df$Latitude, col = "violet", pch = 19, cex = 1.5)
+text(df$Longitude, df$Latitude, labels = df$N.de.referência, pos = 3, cex = 0.8)
+
+
+
+legend(x = max(df$Longitude) + 0.1, y = mean(df$Latitude)  , legend=paste(df$Cidade, df$N.de.referência, sep=" - "), cex=0.31)
+
+```
