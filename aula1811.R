@@ -39,16 +39,24 @@ ui <- fluidPage(
       )
       ,
       mainPanel(
-        textOutput("texto")
+        textOutput("texto"),
+        textOutput("imc_loco"),
+        plotOutput("grafico")
+        
         
       )))
 
 
 server <- function(input,output) {
   
-  texto <-input$name
-  output$texto <- renderText(texto)
-  
+  output$texto <-renderText(paste("Olá", input$name))
+  output$imc_loco <- renderText(paste("Seu IMC é: ",as.character(input$peso/(input$altura^2)), "Parabéns"))
+  output$grafico <- renderPlot({
+  x <- seq(24.9 - 3*4.5, 24.5 + 3*4.5, length.out = 500)
+  plot(x, dnorm(x,24.9,4.5), type ='l', ylab = "Distribuição", xlab = "IMC")
+  abline( v = input$peso/(input$altura^2), col = 'tomato')
+    
+  })
   
   
 }     
@@ -57,4 +65,8 @@ server <- function(input,output) {
     
 
 shinyApp(ui = ui, server = server)  
+
+
+
+
 
